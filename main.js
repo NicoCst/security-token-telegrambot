@@ -24,27 +24,68 @@ bot.onText(/\/checkToken (.+)/, async (msg, match) => {
             let tokenInfo = res.result[tokenAddress];
 
             let tokenName = tokenInfo.token_name;
+            let tokenSymbol = tokenInfo.token_symbol;
+
+            // Honeypot ?
             let isHoneypot = tokenInfo.is_honeypot;
-            let buyTax = tokenInfo.buy_tax;
-            let sellTax = tokenInfo.sell_tax;
+            if (isHoneypot == 1){
+                isHoneypot = "Oui"
+            } else if (isHoneypot == 0){
+                isHoneypot = "Non"
+            } else {
+                isHoneypot = "Impossible d'avoir l'info"
+            }
+
+            let buyTax = tokenInfo.buy_tax * 100;
+            let sellTax = tokenInfo.sell_tax * 100;
             let creatorAddress = tokenInfo.creator_address;
             let creatorPercent = tokenInfo.creator_percent;
-            let canTakeBackOwnership = tokenInfo.can_take_back_ownership;
-            let isAntiWhale = tokenInfo.is_anti_whale;
-            let isMintable = tokenInfo.is_mintable;
 
-            let message = `
+            //Take back Ownership ?
+            let canTakeBackOwnership = tokenInfo.can_take_back_ownership;
+            if (canTakeBackOwnership == 1){
+                canTakeBackOwnership = "Oui"
+            } else if (canTakeBackOwnership == 0){
+                canTakeBackOwnership = "Non"
+            } else {
+                canTakeBackOwnership = "Impossible d'avoir l'info"
+            }
+
+            // AntiWhale ?
+            let isAntiWhale = tokenInfo.is_anti_whale;
+            if (isAntiWhale == 1){
+                isAntiWhale = "Oui"
+            } else if (isAntiWhale == 0){
+                isAntiWhale = "Non"
+            } else {
+                isAntiWhale = "Impossible d'avoir l'info"
+            }
+
+            // Mintable ?
+            let isMintable = tokenInfo.is_mintable;
+            if (isMintable == 1){
+                isMintable = "Oui"
+            } else if (isMintable == 0){
+                isMintable = "Non"
+            } else {
+                isMintable = "Impossible d'avoir l'info"
+            }
+
+            let message =
+                `
                 Token Address: ${tokenAddress},
                 Token Name: ${tokenName},
-                Is Honeypot: ${isHoneypot},
-                Buy Tax: ${buyTax},
-                Sell Tax: ${sellTax},
+                Token Symbol: ${tokenSymbol},
+                Honeypot ? : ${isHoneypot},
+                Buy Tax: ${buyTax}%,
+                Sell Tax: ${sellTax}%,
                 Creator Address: ${creatorAddress},
-                Creator Percent: ${creatorPercent},
+                Creator % token owned: ${creatorPercent}%,
                 Can Take Back Ownership: ${canTakeBackOwnership},
-                Is Anti-Whale: ${isAntiWhale},
-                Is Mintable: ${isMintable}
-            `;
+                Protection anti-whale: ${isAntiWhale},
+                Is Mintable ?: ${isMintable}
+                `
+            ;
 
             bot.sendMessage(chatId, message);
         }
