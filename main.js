@@ -51,6 +51,16 @@ bot.onText(/\/checkToken (.+)/, async (msg, match) => {
                 canTakeBackOwnership = "Impossible d'avoir l'info"
             }
 
+            // Slippage is modifiable ?
+            let slippageModifiable = tokenInfo.slippage_modifiable;
+            if (slippageModifiable == 1){
+                slippageModifiable = "Oui"
+            } else if (slippageModifiable == 0){
+                slippageModifiable = "Non"
+            } else {
+                slippageModifiable = "Impossible d'avoir l'info"
+            }
+
             // AntiWhale ?
             let isAntiWhale = tokenInfo.is_anti_whale;
             if (isAntiWhale == 1){
@@ -73,16 +83,16 @@ bot.onText(/\/checkToken (.+)/, async (msg, match) => {
 
             let message =
                 `
-                Token Address: ${tokenAddress},
-                Token Name: ${tokenName},
-                Token Symbol: ${tokenSymbol},
-                Honeypot ? : ${isHoneypot},
-                Buy Tax: ${buyTax}%,
-                Sell Tax: ${sellTax}%,
-                Creator Address: ${creatorAddress},
-                Creator % token owned: ${creatorPercent}%,
-                Can Take Back Ownership: ${canTakeBackOwnership},
-                Protection anti-whale: ${isAntiWhale},
+                Token Name: ${tokenName}
+                Token Symbol: ${tokenSymbol}
+                Honeypot ? : ${isHoneypot}
+                Buy Tax: ${buyTax}%
+                Sell Tax: ${sellTax}%
+                Creator Address: ${creatorAddress}
+                Creator % token owned: ${creatorPercent}%
+                Can Take Back Ownership: ${canTakeBackOwnership}
+                Is the tax editable: ${slippageModifiable}
+                Protection anti-whale: ${isAntiWhale}
                 Is Mintable ?: ${isMintable}
                 `
             ;
