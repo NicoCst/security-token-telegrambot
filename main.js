@@ -6,21 +6,40 @@ dotenv.config();
 
 let telegramBotKey = process.env["telekey"];
 
-// Remplacez 'YOUR_TELEGRAM_BOT_TOKEN' par le token de votre bot Telegram
 const bot = new TelegramBot(telegramBotKey, {polling: true});
 
-bot.onText(/\/checkToken (.+)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-    const tokenAddress = match[1];
+const chainIds = {
+    avax: "43114",   // Avalanche
+    arb: "42161",    // Arbitrum
+    bsc: "56",       // Binance Smart Chain
+    eth: "1",        // Ethereum Mainnet
+    ftm: "250",      // Fantom Opera
+    heco: "128",     // Huobi Eco Chain
+    matic: "137",    // Polygon (Matic)
+    sol: "1399811149",      // Solana
+    xdai: "100",     // xDai
+}
 
-    let chainId = "43114";
+bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const chainName = match[1].toLowerCase(); // Convertit en minuscules pour assurer la correspondance
+    const tokenAddress = match[2];
+
+    // Vérifiez si le nom de la chaîne est valide
+    if (!chainIds.hasOwnProperty(chainName)) {
+        bot.sendMessage(chatId, `Chaîne invalide: ${chainName}`);
+        return;
+    }
+
+    const chainId = chainIds[chainName];
 
     let res = await GoPlus.tokenSecurity(chainId, [tokenAddress], 30);
 
     if (res.code !== ErrorCode.SUCCESS) {
-        bot.sendMessage(chatId, `Error: ${res.message}`);
+        bot.sendMessage(chatId, `Erreur: ${res.message}`);
     } else {
         for (let tokenAddress in res.result) {
+
             let tokenInfo = res.result[tokenAddress];
 
             let tokenName = tokenInfo.token_name;
@@ -81,19 +100,56 @@ bot.onText(/\/checkToken (.+)/, async (msg, match) => {
                 isMintable = "Impossible d'avoir l'info"
             }
 
+            // Holders
+            let holders = tokenInfo.holders;
+            let holdersMessage = "Holders:\n";
+
+            for (let holder of holders) {
+                let address = holder.address;
+                let locked = holder.locked === 1 ? "Oui" : "Non";
+                let tag = holder.tag;
+                let isContract = holder.is_contract === 1 ? "Oui" : "Non";
+                let balance = holder.balance
+                let percent = holder.percent
+
+                holdersMessage += `Address: ${address}\n`;
+                holdersMessage += `Locked: ${locked}\n`;
+                holdersMessage += `Tag: ${tag}\n`;
+                holdersMessage += `Is Contract: ${isContract}\n`;
+                holdersMessage += `Balance: ${balance}\n`;
+                holdersMessage += `Percent: ${percent}%\n`;
+
+                if (holder.locked_detail && holder.locked_detail.length > 0) {
+                    holdersMessage += "Locked Details:\n";
+                    for (let lockedDetail of holder.locked_detail) {
+                        let amount = lockedDetail.amount;
+                        let endTime = lockedDetail.end_time;
+                        let optTime = lockedDetail.opt_time;
+
+                        holdersMessage += `  Amount Locked: ${amount}\n`;
+                        holdersMessage += `  Unlock Time: ${endTime}\n`;
+                        holdersMessage += `  Locked Time: ${optTime}\n`;
+                    }
+                }
+
+                holdersMessage += "\n";
+            }
+
             let message =
                 `
                 Token Name: ${tokenName}
                 Token Symbol: ${tokenSymbol}
-                Honeypot ? : ${isHoneypot}
                 Buy Tax: ${buyTax}%
                 Sell Tax: ${sellTax}%
                 Creator Address: ${creatorAddress}
                 Creator % token owned: ${creatorPercent}%
+                Honeypot ? : ${isHoneypot}
                 Can Take Back Ownership: ${canTakeBackOwnership}
                 Is the tax editable: ${slippageModifiable}
                 Protection anti-whale: ${isAntiWhale}
                 Is Mintable ?: ${isMintable}
+                Top Holders Infos :
+                ${holdersMessage}
                 `
             ;
 
@@ -101,4 +157,3 @@ bot.onText(/\/checkToken (.+)/, async (msg, match) => {
         }
     }
 });
-
