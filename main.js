@@ -102,7 +102,7 @@ bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
 
             // Holders
             let holders = tokenInfo.holders;
-            let holdersMessage = "Holders:\n";
+            let holdersMessage = "🔹 Top Holders Infos :\n";
 
             for (let holder of holders) {
                 let address = holder.address;
@@ -129,6 +129,7 @@ bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
                         holdersMessage += `  Amount Locked: ${amount}\n`;
                         holdersMessage += `  Unlock Time: ${endTime}\n`;
                         holdersMessage += `  Locked Time: ${optTime}\n`;
+                        holdersMessage += ` ------------------------- `
                     }
                 }
 
@@ -137,20 +138,18 @@ bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
 
             let message =
                 `
-                Token Name: ${tokenName}
-                Token Symbol: ${tokenSymbol}
-                Buy Tax: ${buyTax}%
-                Sell Tax: ${sellTax}%
-                Creator Address: ${creatorAddress}
-                Creator % token owned: ${creatorPercent}%
-                Honeypot ? : ${isHoneypot}
-                Can Take Back Ownership: ${canTakeBackOwnership}
-                Is the tax editable: ${slippageModifiable}
-                Protection anti-whale: ${isAntiWhale}
-                Is Mintable ?: ${isMintable}
-                Top Holders Infos :
-                ${holdersMessage}
-                `
+                🔹 Token Name: ${tokenName}
+🔹 Token Symbol: ${tokenSymbol}
+🔹 Buy Tax: ${buyTax}%
+🔹 Sell Tax: ${sellTax}%
+🔹 Creator Address: ${creatorAddress}
+🔹 Creator % token owned: ${creatorPercent}%
+🔹 Honeypot ? : ${isHoneypot ? 'Yes' : 'No'}
+🔹 Can Take Back Ownership: ${canTakeBackOwnership ? 'Yes' : 'No'}
+🔹 Is the tax editable: ${slippageModifiable ? 'Yes' : 'No'}
+🔹 Anti-whale protection: ${isAntiWhale ? 'Yes' : 'No'}
+🔹 Is Mintable ?: ${isMintable ? 'Yes' : 'No'}\n
+${holdersMessage}`
             ;
 
             bot.sendMessage(chatId, message);
