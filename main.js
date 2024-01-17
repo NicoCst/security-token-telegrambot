@@ -112,12 +112,13 @@ bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
                 let balance = holder.balance
                 let percent = holder.percent
 
-                holdersMessage += `Address: ${address}\n`;
-                holdersMessage += `Locked: ${locked}\n`;
-                holdersMessage += `Tag: ${tag}\n`;
-                holdersMessage += `Is Contract: ${isContract}\n`;
-                holdersMessage += `Balance: ${balance}\n`;
-                holdersMessage += `Percent: ${percent}%\n`;
+                holdersMessage += `     ▪️ Address: ${address}\n`;
+                holdersMessage += `     ▪️ Locked: ${locked}\n`;
+                holdersMessage += `     ▪️ Tag: ${tag}\n`;
+                holdersMessage += `     ▪️ Is Contract: ${isContract}\n`;
+                holdersMessage += `     ▪️ Balance: ${balance}\n`;
+                holdersMessage += `     ▪️ Percent: ${percent}%\n`;
+                holdersMessage += ` \n --------------------------------------------------------------------------------- \n`
 
                 if (holder.locked_detail && holder.locked_detail.length > 0) {
                     holdersMessage += "Locked Details:\n";
@@ -129,7 +130,6 @@ bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
                         holdersMessage += `  Amount Locked: ${amount}\n`;
                         holdersMessage += `  Unlock Time: ${endTime}\n`;
                         holdersMessage += `  Locked Time: ${optTime}\n`;
-                        holdersMessage += ` ------------------------- `
                     }
                 }
 
@@ -139,16 +139,16 @@ bot.onText(/\/check (.+?) (.+)/, async (msg, match) => {
             let message =
                 `
                 🔹 Token Name: ${tokenName}
-🔹 Token Symbol: ${tokenSymbol}
-🔹 Buy Tax: ${buyTax}%
-🔹 Sell Tax: ${sellTax}%
-🔹 Creator Address: ${creatorAddress}
-🔹 Creator % token owned: ${creatorPercent}%
-🔹 Honeypot ? : ${isHoneypot ? 'Yes' : 'No'}
-🔹 Can Take Back Ownership: ${canTakeBackOwnership ? 'Yes' : 'No'}
-🔹 Is the tax editable: ${slippageModifiable ? 'Yes' : 'No'}
-🔹 Anti-whale protection: ${isAntiWhale ? 'Yes' : 'No'}
-🔹 Is Mintable ?: ${isMintable ? 'Yes' : 'No'}\n
+⚜️ Token Symbol: ${tokenSymbol}
+📈 Buy Tax: ${buyTax}%
+📉 Sell Tax: ${sellTax}%
+📬 Creator Address: ${creatorAddress}
+💰 Creator % token owned: ${creatorPercent}%
+🍯 Honeypot ? : ${isHoneypot ? 'Yes' : 'No'}
+🥷 Can Take Back Ownership: ${canTakeBackOwnership ? 'Yes' : 'No'}
+✍️ Is the tax editable: ${slippageModifiable ? 'Yes' : 'No'}
+🐋 Anti-whale protection: ${isAntiWhale ? 'Yes' : 'No'}
+🧵 Is Mintable ?: ${isMintable ? 'Yes' : 'No'}\n
 ${holdersMessage}`
             ;
 
